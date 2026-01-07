@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuis Mindset Guru</title>
+    <title>Kuis Refleksi Guru</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #008080; /* Teal modern */
+            --primary-color: #008080;
             --secondary-color: #f0f4f4;
             --text-dark: #333;
             --success-bg: #d4edda;
@@ -20,8 +20,6 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
             background: linear-gradient(135deg, #e0f7fa 0%, #e8eff7 100%);
             margin: 0;
             padding: 20px;
@@ -33,67 +31,50 @@
 
         .card {
             background: white;
-            padding: 30px 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            max-width: 700px;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
             width: 100%;
+            transition: all 0.3s ease;
         }
 
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 10px;
+        /* Navigasi Halaman */
+        .page { display: none; animation: fadeIn 0.5s ease; }
+        .active { display: block; }
+
+        h1 { color: var(--primary-color); text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+
+        /* Gaya Input Nama */
+        .input-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            box-sizing: border-box;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .question-item {
-            margin-bottom: 30px;
-        }
-
-        .question-text {
-            font-weight: 500;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-
-        /* Kustomisasi Radio Button agar terlihat seperti kotak pilihan */
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        /* Sembunyikan radio button asli */
-        .option-input {
-            display: none;
-        }
-
-        /* Desain label sebagai pengganti tombol */
+        /* Gaya Kuis */
+        .question-item { margin-bottom: 25px; }
+        .question-text { font-weight: 500; margin-bottom: 15px; color: #2c3e50; }
+        .options-container { display: flex; flex-direction: column; gap: 10px; }
+        .option-input { display: none; }
         .option-label {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 12px 18px;
             background: var(--secondary-color);
             border: 2px solid transparent;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.2s;
             font-size: 0.95rem;
         }
-
-        .option-label:hover {
-            background: #e2e8e8;
-        }
-
-        /* Ketika radio button dipilih, ubah gaya labelnya */
         .option-input:checked + .option-label {
             border-color: var(--primary-color);
             background: #e6f2f2;
@@ -101,203 +82,200 @@
             font-weight: 500;
         }
 
-        .submit-btn {
+        /* Tombol */
+        .btn {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 15px;
             border-radius: 50px;
             cursor: pointer;
             width: 100%;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            transition: background 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 128, 128, 0.2);
+            margin-top: 10px;
+        }
+        .btn:hover { background: #006666; }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            margin-top: 15px;
         }
 
-        .submit-btn:hover {
-            background: #006666;
-        }
-
-        /* Area Hasil */
-        #result {
-            margin-top: 30px;
-            padding: 25px;
-            border-radius: 12px;
-            display: none; /* Disembunyikan di awal */
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .result-header {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .fixed-result {
-            background: var(--danger-bg);
-            color: var(--danger-text);
-            border-left: 5px solid var(--danger-text);
-        }
-        .growth-result {
-            background: var(--success-bg);
-            color: var(--success-text);
-            border-left: 5px solid var(--success-text);
-        }
-        .mixed-result {
-            background: var(--warning-bg);
-            color: var(--warning-text);
-            border-left: 5px solid var(--warning-text);
-        }
+        /* Hasil */
+        .result-box { padding: 25px; border-radius: 15px; margin-top: 20px; }
+        .result-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 10px; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsif untuk HP */
-        @media (max-width: 600px) {
-            .card {
-                padding: 20px 25px;
-            }
-            .option-label {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>Kuis Refleksi Guru</h1>
-    <p class="subtitle">Kenali kecenderungan pola pikir Anda dalam mengajar.</p>
-
-    <form id="quizForm">
-        <div class="question-item">
-            <p class="question-text">1. Saat siswa saya membuat kesalahan, saya...</p>
-            <div class="options-container">
-                <input type="radio" id="q1a" name="q1" value="a" class="option-input">
-                <label for="q1a" class="option-label">a) Menganggapnya sebagai kegagalan dan memberikan nilai rendah</label>
-                
-                <input type="radio" id="q1b" name="q1" value="b" class="option-input">
-                <label for="q1b" class="option-label">b) Menganggapnya sebagai kesempatan untuk belajar dan memberikan umpan balik konstruktif</label>
-            </div>
+    
+    <div id="page1" class="page active">
+        <h1>Selamat Datang</h1>
+        <p class="subtitle">Mari mengenali pola pikir Anda dalam mengajar melalui kuis singkat ini.</p>
+        <div class="input-group">
+            <label for="userName">Masukkan Nama Anda:</label>
+            <input type="text" id="userName" placeholder="Contoh: Ibu Siti / Bpk. Budi">
         </div>
+        <button class="btn" onclick="goToQuiz()">Mulai Kuis</button>
+    </div>
 
-        <div class="question-item">
-            <p class="question-text">2. Saya percaya bahwa kemampuan siswa saya...</p>
-            <div class="options-container">
-                <input type="radio" id="q2a" name="q2" value="a" class="option-input">
-                <label for="q2a" class="option-label">a) Tetap sama dan tidak dapat diubah</label>
-                
-                <input type="radio" id="q2b" name="q2" value="b" class="option-input">
-                <label for="q2b" class="option-label">b) Dapat dikembangkan melalui usaha dan pembelajaran</label>
+    <div id="page2" class="page">
+        <h1 style="font-size: 1.5rem;">Pertanyaan Refleksi</h1>
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 25px;">
+        
+        <form id="quizForm">
+            <div class="question-item">
+                <p class="question-text">1. Saat siswa saya membuat kesalahan, saya...</p>
+                <div class="options-container">
+                    <input type="radio" id="q1a" name="q1" value="a" class="option-input">
+                    <label for="q1a" class="option-label">a) Menganggapnya sebagai kegagalan dan memberikan nilai rendah</label>
+                    <input type="radio" id="q1b" name="q1" value="b" class="option-input">
+                    <label for="q1b" class="option-label">b) Menganggapnya sebagai kesempatan untuk belajar & umpan balik</label>
+                </div>
             </div>
-        </div>
 
-        <div class="question-item">
-            <p class="question-text">3. Saat siswa saya menghadapi kesulitan, saya...</p>
-            <div class="options-container">
-                <input type="radio" id="q3a" name="q3" value="a" class="option-input">
-                <label for="q3a" class="option-label">a) Memberikan jawaban langsung untuk membantu mereka</label>
-                
-                <input type="radio" id="q3b" name="q3" value="b" class="option-input">
-                <label for="q3b" class="option-label">b) Membimbing mereka untuk mencari solusi sendiri</label>
+            <div class="question-item">
+                <p class="question-text">2. Saya percaya bahwa kemampuan siswa saya...</p>
+                <div class="options-container">
+                    <input type="radio" id="q2a" name="q2" value="a" class="option-input">
+                    <label for="q2a" class="option-label">a) Tetap sama dan tidak dapat diubah</label>
+                    <input type="radio" id="q2b" name="q2" value="b" class="option-input">
+                    <label for="q2b" class="option-label">b) Dapat dikembangkan melalui usaha dan pembelajaran</label>
+                </div>
             </div>
-        </div>
 
-        <div class="question-item">
-            <p class="question-text">4. Saya menilai kemampuan siswa saya berdasarkan...</p>
-            <div class="options-container">
-                <input type="radio" id="q4a" name="q4" value="a" class="option-input">
-                <label for="q4a" class="option-label">a) Nilai dan prestasi mereka</label>
-                
-                <input type="radio" id="q4b" name="q4" value="b" class="option-input">
-                <label for="q4b" class="option-label">b) Usaha dan kemajuan mereka</label>
+            <div class="question-item">
+                <p class="question-text">3. Saat siswa saya menghadapi kesulitan, saya...</p>
+                <div class="options-container">
+                    <input type="radio" id="q3a" name="q3" value="a" class="option-input">
+                    <label for="q3a" class="option-label">a) Memberikan jawaban langsung untuk membantu mereka</label>
+                    <input type="radio" id="q3b" name="q3" value="b" class="option-input">
+                    <label for="q3b" class="option-label">b) Membimbing mereka untuk mencari solusi sendiri</label>
+                </div>
             </div>
-        </div>
 
-        <div class="question-item">
-            <p class="question-text">5. Saat siswa saya berhasil, saya...</p>
-            <div class="options-container">
-                <input type="radio" id="q5a" name="q5" value="a" class="option-input">
-                <label for="q5a" class="option-label">a) Menganggapnya sebagai hasil kemampuan alami mereka</label>
-                
-                <input type="radio" id="q5b" name="q5" value="b" class="option-input">
-                <label for="q5b" class="option-label">b) Menganggapnya sebagai hasil usaha dan kerja keras mereka</label>
+            <div class="question-item">
+                <p class="question-text">4. Saya menilai kemampuan siswa saya berdasarkan...</p>
+                <div class="options-container">
+                    <input type="radio" id="q4a" name="q4" value="a" class="option-input">
+                    <label for="q4a" class="option-label">a) Nilai dan prestasi mereka saja</label>
+                    <input type="radio" id="q4b" name="q4" value="b" class="option-input">
+                    <label for="q4b" class="option-label">b) Usaha dan kemajuan yang mereka tunjukkan</label>
+                </div>
             </div>
-        </div>
 
-        <button type="button" class="submit-btn" onclick="calculateResult()">Lihat Hasil Refleksi</button>
-    </form>
+            <div class="question-item">
+                <p class="question-text">5. Saat siswa saya berhasil, saya...</p>
+                <div class="options-container">
+                    <input type="radio" id="q5a" name="q5" value="a" class="option-input">
+                    <label for="q5a" class="option-label">a) Menganggapnya sebagai hasil kemampuan alami mereka</label>
+                    <input type="radio" id="q5b" name="q5" value="b" class="option-input">
+                    <label for="q5b" class="option-label">b) Menganggapnya sebagai hasil usaha dan kerja keras mereka</label>
+                </div>
+            </div>
 
-    <div id="result"></div>
+            <button type="button" class="btn" onclick="showResult()">Lihat Hasil Refleksi</button>
+        </form>
+    </div>
+
+    <div id="page3" class="page" style="text-align: center;">
+        <h1>Hasil Analisis</h1>
+        <p>Halo, <span id="displayUserName" style="font-weight: 600; color: var(--primary-color);"></span>!</p>
+        
+        <div id="resultContent" class="result-box">
+            </div>
+
+        <button class="btn btn-outline" onclick="restartQuiz()">Ulangi Kuis</button>
+    </div>
+
 </div>
 
 <script>
-    function calculateResult() {
+    let currentUserName = "";
+
+    function goToQuiz() {
+        const nameInput = document.getElementById('userName');
+        if (nameInput.value.trim() === "") {
+            alert("Silakan masukkan nama Anda terlebih dahulu.");
+            return;
+        }
+        currentUserName = nameInput.value;
+        
+        // Pindah halaman
+        document.getElementById('page1').classList.remove('active');
+        document.getElementById('page2').classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function showResult() {
         const form = document.getElementById('quizForm');
         const formData = new FormData(form);
         let aCount = 0;
         let bCount = 0;
-        let totalQuestions = 5;
 
-        // Menghitung jawaban
         for (let value of formData.values()) {
             if (value === 'a') aCount++;
             if (value === 'b') bCount++;
         }
 
-        // Validasi: Pastikan semua pertanyaan dijawab
-        if ((aCount + bCount) < totalQuestions) {
-            alert("Mohon jawab semua 5 pertanyaan terlebih dahulu.");
+        if ((aCount + bCount) < 5) {
+            alert("Mohon lengkapi semua jawaban.");
             return;
         }
 
-        const resultDiv = document.getElementById('result');
-        
-        let headerText = "";
-        let explanationText = "";
-        let resultClass = "";
-        let emoji = "";
+        // Tentukan Hasil
+        const resultContent = document.getElementById('resultContent');
+        const displayName = document.getElementById('displayUserName');
+        displayName.innerText = currentUserName;
 
-        // Logika Penentuan Karakter (Sesuai permintaan Anda)
-        if (aCount === totalQuestions) {
-            // Semua A
-            headerText = "Fixed Mindset";
-            emoji = "🔒";
-            resultClass = "fixed-result";
-            explanationText = "Anda cenderung percaya bahwa kemampuan siswa bersifat tetap. Anda fokus pada hasil akhir dan prestasi, dan mungkin kurang memberikan ruang bagi siswa untuk belajar secara mendalam dari kesalahan mereka.";
-        } else if (bCount === totalQuestions) {
-            // Semua B
-            headerText = "Growth Mindset";
-            emoji = "🌱";
-            resultClass = "growth-result";
-            explanationText = "Luar biasa! Anda sangat meyakini bahwa kemampuan siswa dapat dikembangkan. Anda fokus pada proses, usaha, dan melihat kesalahan sebagai kesempatan emas untuk belajar.";
+        let title = "";
+        let desc = "";
+        let bgColor = "";
+        let textColor = "";
+
+        if (aCount === 5) {
+            title = "Fixed Mindset";
+            desc = "Anda cenderung percaya bahwa kemampuan siswa bersifat tetap. Anda fokus pada prestasi akhir. Cobalah memberikan ruang lebih bagi siswa untuk belajar dari kegagalan.";
+            bgColor = "var(--danger-bg)";
+            textColor = "var(--danger-text)";
+        } else if (bCount === 5) {
+            title = "Growth Mindset";
+            desc = "Luar biasa! Anda meyakini bahwa kemampuan dapat berkembang. Anda sangat menghargai proses, usaha, dan melihat tantangan sebagai kesempatan belajar.";
+            bgColor = "var(--success-bg)";
+            textColor = "var(--success-text)";
         } else {
-            // Campuran A dan B
-            headerText = "Pola Pikir Campuran";
-            emoji = "🤔";
-            resultClass = "mixed-result";
-            explanationText = "Anda berada di tengah-tengah. Di beberapa area, Anda sudah menerapkan Growth Mindset, namun di area lain Anda masih terpaku pada Fixed Mindset. Ini adalah titik awal yang bagus untuk terus berkembang.";
+            title = "Pola Pikir Campuran";
+            desc = "Anda memiliki kombinasi pola pikir. Anda sudah mulai menghargai proses, namun di beberapa situasi Anda mungkin masih terpaku pada hasil akhir atau bakat alami.";
+            bgColor = "var(--warning-bg)";
+            textColor = "var(--warning-text)";
         }
 
-        // Menampilkan Hasil dengan animasi
-        resultDiv.style.display = 'none'; // Reset dulu agar animasi berjalan jika diklik ulang
-        setTimeout(() => {
-            resultDiv.className = resultClass;
-            resultDiv.innerHTML = `
-                <div class="result-header">${emoji} Hasil: ${headerText}</div>
-                <p>${explanationText}</p>
-            `;
-            resultDiv.style.display = 'block';
-            // Scroll otomatis ke bagian hasil
-            resultDiv.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        resultContent.style.backgroundColor = bgColor;
+        resultContent.style.color = textColor;
+        resultContent.innerHTML = `
+            <div class="result-title">${title}</div>
+            <p>${desc}</p>
+        `;
+
+        // Pindah ke halaman hasil
+        document.getElementById('page2').classList.remove('active');
+        document.getElementById('page3').classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function restartQuiz() {
+        document.getElementById('quizForm').reset();
+        document.getElementById('userName').value = "";
+        document.getElementById('page3').classList.remove('active');
+        document.getElementById('page1').classList.add('active');
     }
 </script>
 
